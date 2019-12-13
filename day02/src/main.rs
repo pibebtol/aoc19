@@ -6,12 +6,12 @@ fn main() -> std::io::Result<()> {
     let mut content = String::new();
     file.read_to_string(&mut content)?;
     let mut input: Vec<i32> = Vec::new();
-    for s in content.split(",") {
+    for s in content.split(',') {
         input.push(s.parse::<i32>().unwrap());
     }
     for i in 0..99 {
         for j in 0..99 {
-            if compute(input.clone(), i, j) == 19690720 {
+            if compute(input.clone(), i, j) == 19_690_720 {
                 println!("The result is {}", 100 * i + j);
             }
         }
