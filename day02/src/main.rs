@@ -1,42 +1,50 @@
 use std::fs::File;
 use std::io::Read;
 
-fn main() -> std::io::Result<()> {
-    let mut file = File::open("input")?;
+fn main() {
+    // read in input from file
+    let mut file = File::open("input")
+        .expect("couldn't read in file");
     let mut content = String::new();
-    file.read_to_string(&mut content)?;
-    let mut input: Vec<i32> = Vec::new();
+    file.read_to_string(&mut content)
+        .expect("couldn't parse file properly");
+
+    // convert input to vector
+    let mut input = Vec::new();
     for s in content.split(',') {
-        input.push(s.parse::<i32>().unwrap());
+        input.push(s.parse()
+            .expect("couldn't parse input array"));
     }
-    for i in 0..99 {
-        for j in 0..99 {
+    
+    // calculate result
+    println!("The 0 index for code 1202 is {}", compute(input.clone(), 12, 2));
+    for i in 0..=99 {
+        for j in 0..=99 {
             if compute(input.clone(), i, j) == 19_690_720 {
                 println!("The result is {}", 100 * i + j);
             }
         }
     }
-    println!("The 0 index is {}", compute(input, 12, 2));
-    Ok(())
 }
 
-fn compute(mut code: Vec<i32>, i: i32, j: i32) -> i32 {
-    code[1] = i;
-    code[2] = j;
-     for i in 0..code.len() {
-        if i % 4 == 0 {
-            if code[i] == 99 {
-                break;
-            }
-            let i1 = code[i+1];
-            let i2 = code[i+2];
-            let i3 = code[i+3];
-            if code[i] == 1 {
-                code[i3 as usize] = code[i1 as usize] + code[i2 as usize];
-            }
-            if code[i] == 2 {
-                code[i3 as usize] = code[i1 as usize] * code[i2 as usize];
-            }
+fn compute(mut code: Vec<usize>, second: usize, third: usize) -> usize {
+    code[1] = second;
+    code[2] = third;
+
+    // execut OP-code
+    let mut pos = 0;
+    while code[pos] != 99 {
+        let pos3 = code[pos + 3];
+        match code[pos] {
+            1 => {
+                code[pos3] = code[code[pos + 1]] + code[code[pos + 2]];
+                pos += 4;
+            },
+            2 => {
+                code[pos3] = code[code[pos + 1]] * code[code[pos + 2]];
+                pos += 4;
+            },
+            _ => println!("Somethings itchy here!"),
         }
     }
     code[0]
